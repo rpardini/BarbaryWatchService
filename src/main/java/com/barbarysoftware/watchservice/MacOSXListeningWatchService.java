@@ -31,12 +31,14 @@ class MacOSXListeningWatchService extends AbstractWatchService {
         final CFArrayRef pathsToWatch = CarbonAPI.INSTANCE.CFArrayCreate(null, values, CFIndex.valueOf(1), null);
         final MacOSXWatchKey watchKey = new MacOSXWatchKey(this, events);
 
-        final double latency = 1.0; /* Latency in seconds */
+        final double latency = 0.1; /* Latency in seconds */
 
         final long kFSEventStreamEventIdSinceNow = -1; //  this is 0xFFFFFFFFFFFFFFFF
         final int kFSEventStreamCreateFlagNoDefer = 0x00000002;
         final CarbonAPI.FSEventStreamCallback callback = new MacOSXListeningCallback(watchKey, lastModifiedMap);
         callbackList.add(callback);
+
+        // See: https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/index.html
         final FSEventStreamRef stream = CarbonAPI.INSTANCE.FSEventStreamCreate(
                 Pointer.NULL,
                 callback,
